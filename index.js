@@ -5,8 +5,30 @@ require("dotenv").config({ path: "./.env" });
 
 const PORT = process.env.PORT;
 
-app.arguments(cors());
-app.arguments(express.json());
+app.use(cors());
+app.use(express.json());
+
+app.post("/usuarios", async (req, res) => {
+  try {
+    const user = req.body;
+  } catch (error) {
+    res.status(500).json({ message: "no se puede crear usuario" });
+  }
+});
+
+app.get("/usuarios", async (req, res) => {
+  //devolver datos en caso de estar registrado
+  //verificar validez
+  //decodificar
+  //devolver Usuario
+  try {
+  } catch (error) {}
+});
+
+app.post("/usuarios/login", async (req, res) => {
+  try {
+  } catch (error) {}
+});
 
 app.get("*", (req, res) => {
   res
@@ -14,7 +36,4 @@ app.get("*", (req, res) => {
     .json({ message: "the path you are trying to access does not exist" });
 });
 
-app.listen(
-  PORT,
-  console.log(`El servidor esta corriendo en el puerto ${PORT}}`)
-);
+app.listen(PORT, console.log(`Server is running on the port : ${PORT}}`));

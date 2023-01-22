@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config({ path: "./.env" });
+const { addUser, getUsers } = require("./controller/usuarios");
 
 const PORT = process.env.PORT;
 
@@ -11,18 +12,18 @@ app.use(express.json());
 app.post("/usuarios", async (req, res) => {
   try {
     const user = req.body;
-    res.json({message:"endpoint conectado"})
+   
+    await addUser(user);
+    res.send({ message: "user created" });
   } catch (error) {
     res.status(500).json({ message: "no se puede crear usuario" });
   }
 });
 
 app.get("/usuarios", async (req, res) => {
-  //devolver datos en caso de estar registrado
-  //verificar validez
-  //decodificar
-  //devolver Usuario
   try {
+    const users = await getUsers();
+    res.send(users);
   } catch (error) {}
 });
 

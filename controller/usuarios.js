@@ -1,23 +1,24 @@
-const {Pool} = require("pg")
+const pool = require("../config/pool");
+const { encryptPassword } = require("../helpers/HelperUsuario");
+const bcrypt = require("bcryptjs");
 
-//registrar usuarios
-//email, password, rol, lenguaje
-
-//iniciar sesion
-//email, password
-
-
-//al iniciar sesion devuelve los datos del usuario
-//obtenerUsuarios
-
-const addUser = async (email, password, rol, lenguaje) => {
-  const query = "INSERT INTO usuarios VALUES (DEFAULT, $1, $2, $3, $4)"
-  const values = [email, password, rol, lenguaje]
-  const {rows: newUser} = await pool.query(query, values)
+const addUser = async ({ email, password, rol, lenguage }) => {
+  const encrypted = encryptPassword(password);
+  const query = "INSERT INTO usuarios VALUES (DEFAULT, $1, $2, $3, $4)";
+  const values = [email, encrypted, rol, lenguage];
+  const { rows: newUser } = await pool.query(query, values);
   return newUser;
+};
 
-}
+const getUsers = async () => {
+  const query = "SELECT * FROM usuarios";
+
+  const { rows: users } = await pool.query(query);
+
+  return users;
+};
 
 module.exports = {
-  addUser
-}
+  addUser,
+  getUsers,
+};

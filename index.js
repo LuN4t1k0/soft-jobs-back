@@ -11,6 +11,7 @@ app.use(express.json());
 app.post("/usuarios", async (req, res) => {
   try {
     const user = req.body;
+    res.json({message:"endpoint conectado"})
   } catch (error) {
     res.status(500).json({ message: "no se puede crear usuario" });
   }

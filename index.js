@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const jwt = require("jsonwebtoken");
 const cors = require("cors");
 require("dotenv").config({ path: "./.env" });
 const {
@@ -7,6 +8,7 @@ const {
   getUsers,
   validateCredentials,
 } = require("./controller/usuarios");
+const { getToken } = require("./helpers/HelperUsuario");
 
 const PORT = process.env.PORT;
 
@@ -23,24 +25,24 @@ app.post("/usuarios", async (req, res) => {
   }
 });
 
-app.get("/usuarios", async (req, res) => {
-  try {
-    const users = await getUsers();
-    res.send(users);
-  } catch (error) {}
-});
-
-
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     await validateCredentials(email, password);
-    // const token = jwt.sign({ email }, process.env.SECRET_KEY);
-    res.send("funciona");
+    const token = jwt.sign({ email }, process.env.SECRET);
+    res.send(token);
   } catch (error) {
     console.log(error);
     res.status(error.code || 500).send(error);
   }
+});
+
+app.get("/usuarios", async (req, res) => {
+  const { email } = jwt.decode(getToken(req.header("Authorization")));
+  try {
+    const users = await getUsers(email);
+    res.send(users);
+  } catch (error) {}
 });
 
 app.get("*", (req, res) => {

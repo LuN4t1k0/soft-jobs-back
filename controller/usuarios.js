@@ -15,11 +15,11 @@ const addUser = async ({ email, password, rol, lenguage }) => {
 
 const validateCredentials = async (email, password) => {
   const values = [email];
-  const consulta = "SELECT * FROM usuarios WHERE email = $1";
+  const query = "SELECT * FROM usuarios WHERE email = $1";
   const {
     rows: [usuario],
     rowCount,
-  } = await pool.query(consulta, values);
+  } = await pool.query(query, values);
 
   const { password: passwordEncriptada } = usuario;
   const passwordEsCorrecta = comparePassword(password, passwordEncriptada);
@@ -28,11 +28,17 @@ const validateCredentials = async (email, password) => {
     throw { code: 401, message: "Email o contraseña incorrecta" };
 };
 
-const getUsers = async () => {
-  const query = "SELECT * FROM usuarios";
-  const { rows: users } = await pool.query(query);
-
-  return users;
+const getUsers = async (email) => {
+  const values = [email];
+  const query = "SELECT * FROM usuarios WHERE email = $1";
+  const { rows: users } = await pool.query(query, values);
+  const user = {
+    email: users[0].email,
+    rol: users[0].rol,
+    lenguage: users[0].lenguage,
+  };
+  console.log(user);
+  return user;
 };
 
 module.exports = {

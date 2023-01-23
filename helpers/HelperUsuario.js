@@ -11,7 +11,7 @@ const encryptPassword = (password) => {
 
 const comparePassword = async (password1, password2) => {
   try {
-    const compare = await bycript.compareSync(password1, password2);
+    const compare = await bcrypt.compareSync(password1, password2);
     return compare;
   } catch (error) {
     throw error;

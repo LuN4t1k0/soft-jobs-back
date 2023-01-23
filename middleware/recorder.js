@@ -1,7 +1,7 @@
 const recorder = async (req, res, next) => {
   const endpoint = req.url;
-  console.error(
-    `con fecha : ${new Date()} se ha consultado el endpoint : ${endpoint} `
+  console.log(
+    `Fecha : ${new Date()} se ha consultado el endpoint : ${endpoint} `
   );
   next();
 };

@@ -1,9 +1,9 @@
+const bcrypt = require("bcryptjs/dist/bcrypt");
 const pool = require("../config/pool");
 const {
   encryptPassword,
   comparePassword,
 } = require("../helpers/HelperUsuario");
-const bcrypt = require("bcryptjs");
 
 const addUser = async ({ email, password, rol, lenguage }) => {
   const encrypted = encryptPassword(password);
@@ -23,12 +23,12 @@ const validateCredentials = async (email, password) => {
 
   const { password: passwordEncriptada } = usuario;
   const passwordEsCorrecta = comparePassword(password, passwordEncriptada);
-  console.log(rowCount);
-  if (!passwordEsCorrecta || rowCount === 0)
+
+  if (!passwordEsCorrecta)
     throw { code: 401, message: "Email o contraseña incorrecta" };
 };
 
-const getUsers = async (email) => {
+const getUser = async (email) => {
   const values = [email];
   const query = "SELECT * FROM usuarios WHERE email = $1";
   const { rows: users } = await pool.query(query, values);
@@ -37,12 +37,12 @@ const getUsers = async (email) => {
     rol: users[0].rol,
     lenguage: users[0].lenguage,
   };
-  console.log(user);
+
   return user;
 };
 
 module.exports = {
   addUser,
-  getUsers,
+  getUser,
   validateCredentials,
 };

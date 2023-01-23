@@ -9,9 +9,9 @@ const encryptPassword = (password) => {
   }
 };
 
-const comparePassword = async (password1, password2) => {
+const comparePassword = (password1, password2) => {
   try {
-    const compare = await bcrypt.compareSync(password1, password2);
+    const compare =  bcrypt.compareSync(password1, password2);
     return compare;
   } catch (error) {
     throw error;

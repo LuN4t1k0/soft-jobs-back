@@ -5,17 +5,19 @@ const cors = require("cors");
 require("dotenv").config({ path: "./.env" });
 const {
   addUser,
-  getUsers,
+  getUser,
   validateCredentials,
 } = require("./controller/usuarios");
 const { getToken } = require("./helpers/HelperUsuario");
+const isNotEmpty = require("./middleware/isNotEmpty");
+const recorder = require("./middleware/recorder");
 
 const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
 
-app.post("/usuarios", async (req, res) => {
+app.post("/usuarios", recorder, async (req, res) => {
   try {
     const user = req.body;
     await addUser(user);
@@ -25,7 +27,7 @@ app.post("/usuarios", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login", recorder, async (req, res) => {
   try {
     const { email, password } = req.body;
     await validateCredentials(email, password);
@@ -37,15 +39,15 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/usuarios", async (req, res) => {
+app.get("/usuarios", recorder, async (req, res) => {
   const { email } = jwt.decode(getToken(req.header("Authorization")));
   try {
-    const users = await getUsers(email);
+    const users = await getUser(email);
     res.send(users);
   } catch (error) {}
 });
 
-app.get("*", (req, res) => {
+app.get("*", recorder, (req, res) => {
   res
     .status(404)
     .json({ message: "the path you are trying to access does not exist" });

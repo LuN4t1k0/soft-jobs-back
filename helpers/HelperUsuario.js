@@ -1,16 +1,34 @@
 const bcrypt = require("bcryptjs");
 
 const encryptPassword = (password) => {
-  let encryptedPassword = bcrypt.hashSync(password);
-  return encryptedPassword;
+  try {
+    let encryptedPassword = bcrypt.hashSync(password);
+    return encryptedPassword;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const comparePassword = async (password1, password2) => {
-  const compare = await bycript.compareSync(password1, password2);
-  return compare;
+  try {
+    const compare = await bycript.compareSync(password1, password2);
+    return compare;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getToken = (Authorization) => {
+  try {
+    const token = Authorization.split("Bearer ")[1];
+    return token;
+  } catch (error) {
+    throw { code: 401, message: "token not found" };
+  }
 };
 
 module.exports = {
   encryptPassword,
   comparePassword,
+  getToken
 };

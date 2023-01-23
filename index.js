@@ -2,7 +2,11 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config({ path: "./.env" });
-const { addUser, getUsers } = require("./controller/usuarios");
+const {
+  addUser,
+  getUsers,
+  validateCredentials,
+} = require("./controller/usuarios");
 
 const PORT = process.env.PORT;
 
@@ -12,7 +16,6 @@ app.use(express.json());
 app.post("/usuarios", async (req, res) => {
   try {
     const user = req.body;
-   
     await addUser(user);
     res.send({ message: "user created" });
   } catch (error) {
@@ -27,9 +30,17 @@ app.get("/usuarios", async (req, res) => {
   } catch (error) {}
 });
 
-app.post("/usuarios/login", async (req, res) => {
+
+app.post("/login", async (req, res) => {
   try {
-  } catch (error) {}
+    const { email, password } = req.body;
+    await validateCredentials(email, password);
+    // const token = jwt.sign({ email }, process.env.SECRET_KEY);
+    res.send("funciona");
+  } catch (error) {
+    console.log(error);
+    res.status(error.code || 500).send(error);
+  }
 });
 
 app.get("*", (req, res) => {
